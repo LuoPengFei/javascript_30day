@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript CSS Clock</title>
+    
+    <!--CSS样式-->
+    <style type="text/css">
+        
+        html {
+            /*背景*/
+            background:  #018DED url(http://unsplash.it/1500/1000?image=881&blur=50);
+            background-size: cover;/*defaul is auto, cover length percentage, contain*/
+            font-family: 'helvetica neue';
+            text-align: center;
+            font-size: 10px;
+        }
+
+        body {
+            margin: 0;
+            font-size: 2rem;
+            display: flex;
+            flex: 1;
+            min-height: 100vh;/*vw (viewport width) vh (viewport height) 是视窗的大小，100vw = 100%视窗宽度 100vh = 100%视窗高度，
+                              用vw，vh设定的大小只和视窗大小有关，所以用来开发多种屏幕设备的应用用这个单位还是挺合适的*/
+            align-items: center;
+        }
+
+        .clock {
+            width: 30rem;
+            height: 30rem;
+            border: 20px solid white;
+            border-radius: 50%;
+            margin: 50px auto;
+            position: relative;
+            padding: 2rem;/*font size of the root element,“em”就是一个相对值，而且是一个相对于父元素的值*/
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1),
+            inset 0 0 0 3px #EFEFEF,
+            inset 0 0 10px black,
+            0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .clock-face {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform: translateY(-3px);
+        }
+
+        .hand {
+            width: 50%;
+            height: 6px;
+            background: black;
+            position: absolute;
+            top: 50%;
+            transform-origin: 100%;/*/初始化使三个指针全部指向12时*/
+            transform: rotate(90deg);
+            transition: all 0.05s;
+            transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
+            -moz-transition-timing-function:  cubic-bezier(0.1, 2.7, 0.58, 1);/*Firefox 4*/
+            -webkit-transition-timing-function:  cubic-bezier(0.1, 2.7, 0.58, 1);/*Safari & chrome*/
+            -o-transition-timing-function:  cubic-bezier(0.1, 2.7, 0.58, 1); /*Opera*/
+        }
+        
+    </style>
+    
+    
+    
+</head>
+<body>
+
+<!--div.clock>div.clock-face>div.hour-hand+div.min-hand+div.second-hand-->
+<div class="clock">
+    <div class="clock-face">
+        <div class="hand hour-hand"></div>
+        <div class="hand min-hand"></div>
+        <div class="hand second-hand"></div>
+    </div>
+</div>
+
+
+<script>
+
+    const secondHand = document.querySelector(".second-hand");
+    const minsHand = document.querySelector(".min-hand");
+    const hourHand = document.querySelector(".hour-hand");
+
+    var minDeg = 0;
+    var secondDeg = 0;
+    var hourDeg = 0;
+
+    function initDate() {
+        const now = new  Date();
+
+        const seconds = now.getSeconds();
+        secondDeg = 90 + (seconds / 60) * 360;
+
+        const minute = now.getMinutes();
+        minDeg = 90 + (minute / 60) * 360 + ((seconds / 60) / 60) * 360;
+
+        const hour = now.getHours();
+        hourDeg = 90 + (hour / 12) * 360 + ((minute / 60) / 12) * 360 + (((seconds / 60) / 60) / 12) * 360;
+    }
+
+    function updateDate() {
+
+        /*让角度一直保持增长*/
+        secondDeg += (1 / 60) * 360;
+        minDeg += (1/60/60)*360;
+        hourDeg += (1/60/60/60)*12;
+
+        secondHand.style.transform = `rotate(${secondDeg}deg)`;
+        minsHand.style.transform = `rotate(${minDeg}deg)`;
+        hourHand.style.transform = `rotate(${hourDeg}deg)`;
+
+    }
+
+
+    initDate();
+    setInterval(updateDate, 1000);
+
+
+
+</script>
+
+
+</body>
+</html>
